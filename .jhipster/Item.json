@@ -1,7 +1,16 @@
 {
   "fluentMethods": true,
   "clientRootFolder": "FruitShop",
-  "relationships": [],
+  "relationships": [
+    {
+      "relationshipName": "stock",
+      "otherEntityName": "stock",
+      "relationshipType": "one-to-one",
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "item"
+    }
+  ],
   "fields": [
     {
       "fieldName": "name",

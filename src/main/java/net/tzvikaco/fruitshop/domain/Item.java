@@ -3,6 +3,7 @@ package net.tzvikaco.fruitshop.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
@@ -40,6 +41,10 @@ public class Item implements Serializable {
     @NotNull
     @Field("image")
     private String image;
+
+    @DBRef
+    @Field("stock")
+    private Stock stock;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public String getId() {
@@ -113,6 +118,19 @@ public class Item implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Stock getStock() {
+        return stock;
+    }
+
+    public Item stock(Stock stock) {
+        this.stock = stock;
+        return this;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

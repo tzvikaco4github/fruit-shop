@@ -27,6 +27,8 @@ public class ItemDTO implements Serializable {
     @NotNull
     private String image;
 
+
+    private String stockId;
     
     public String getId() {
         return id;
@@ -76,6 +78,14 @@ public class ItemDTO implements Serializable {
         this.image = image;
     }
 
+    public String getStockId() {
+        return stockId;
+    }
+
+    public void setStockId(String stockId) {
+        this.stockId = stockId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -103,6 +113,7 @@ public class ItemDTO implements Serializable {
             ", unitType='" + getUnitType() + "'" +
             ", descriptionLink='" + getDescriptionLink() + "'" +
             ", image='" + getImage() + "'" +
+            ", stockId='" + getStockId() + "'" +
             "}";
     }
 }
