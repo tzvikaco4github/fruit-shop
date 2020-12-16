@@ -1,0 +1,41 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "net.tzvikaco.fruitshop",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "6.10.5",
+    "applicationType": "microservice",
+    "baseName": "FruitShop",
+    "packageName": "net.tzvikaco.fruitshop",
+    "packageFolder": "net/tzvikaco/fruitshop",
+    "serverPort": "8081",
+    "authenticationType": "jwt",
+    "cacheProvider": "redis",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "NDYyYWM1MWU4YmY1NDBlY2Q2ZDQ1ODQxZDk0MDZiNjJjMmU0Nzg4ODlhZWU1ZjgyMTdmZjNiN2Q2MDBmYTI4NGQ4NDQ3OWQ5YWE0MWUyZTViMDdkZGRmZDI4YmYzYTUzY2M5MjM1YjQzY2NiZTBlNTk4ODRiMzRiNTA1ZjgxNTc=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1606034401389,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "clientPackageManager": "npm",
+    "nativeLanguage": "en",
+    "languages": ["en"],
+    "blueprints": [],
+    "skipClient": true,
+    "skipUserManagement": true
+  }
+}
