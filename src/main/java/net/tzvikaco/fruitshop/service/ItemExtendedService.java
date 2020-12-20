@@ -25,8 +25,7 @@ public class ItemExtendedService extends ItemService {
             StockDTO newStockDTO = new StockDTO();
             newStockDTO.setStockQuantity(0F);
             newStockDTO.setShopQuantity(0F);
-            StockDTO savedStockDTO = stockService.save(newStockDTO);
-            itemDTO.setStockId(savedStockDTO.getId());
+            itemDTO.setStockId(stockService.save(newStockDTO).getId());
         }
         return super.save(itemDTO);
     }
