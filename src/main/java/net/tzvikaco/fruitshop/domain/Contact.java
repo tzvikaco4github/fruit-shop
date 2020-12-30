@@ -13,7 +13,7 @@ import java.io.Serializable;
  * A Contact.
  */
 @Document(collection = "contact")
-public class Contact implements Serializable {
+public abstract class Contact implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

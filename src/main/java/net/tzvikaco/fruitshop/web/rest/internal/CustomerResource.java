@@ -1,6 +1,7 @@
-package net.tzvikaco.fruitshop.web.rest;
+package net.tzvikaco.fruitshop.web.rest.internal;
 
-import net.tzvikaco.fruitshop.service.ContactService;
+import net.tzvikaco.fruitshop.service.dto.internal.CustomerDTO;
+import net.tzvikaco.fruitshop.service.internal.CustomerService;
 import net.tzvikaco.fruitshop.web.rest.errors.BadRequestAlertException;
 import net.tzvikaco.fruitshop.service.dto.ContactDTO;
 
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,98 +29,98 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class ContactResource {
+public class CustomerResource {
 
-    private final Logger log = LoggerFactory.getLogger(ContactResource.class);
+    private final Logger log = LoggerFactory.getLogger(CustomerResource.class);
 
     private static final String ENTITY_NAME = "fruitShopContact";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final ContactService contactService;
+    private final CustomerService customerService;
 
-    public ContactResource(ContactService contactService) {
-        this.contactService = contactService;
+    public CustomerResource(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     /**
-     * {@code POST  /contacts} : Create a new contact.
+     * {@code POST  /customers} : Create a new contact.
      *
-     * @param contactDTO the contactDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contactDTO, or with status {@code 400 (Bad Request)} if the contact has already an ID.
+     * @param customerDTO the customerDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new customerDTO, or with status {@code 400 (Bad Request)} if the contact has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/contacts")
-    public ResponseEntity<ContactDTO> createContact(@Valid @RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to save Contact : {}", contactDTO);
-        if (contactDTO.getId() != null) {
+    @PostMapping("/customers")
+    public ResponseEntity<ContactDTO> createContact(@Valid @RequestBody CustomerDTO customerDTO) throws URISyntaxException {
+        log.debug("REST request to save Contact : {}", customerDTO);
+        if (customerDTO.getId() != null) {
             throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContactDTO result = contactService.save(contactDTO);
-        return ResponseEntity.created(new URI("/api/contacts/" + result.getId()))
+        ContactDTO result = customerService.save(customerDTO);
+        return ResponseEntity.created(new URI("/api/customers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /contacts} : Updates an existing contact.
+     * {@code PUT  /customers} : Updates an existing customer.
      *
-     * @param contactDTO the contactDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contactDTO,
-     * or with status {@code 400 (Bad Request)} if the contactDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the contactDTO couldn't be updated.
+     * @param customerDTO the customerDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated customerDTO,
+     * or with status {@code 400 (Bad Request)} if the customerDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the customerDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/contacts")
-    public ResponseEntity<ContactDTO> updateContact(@Valid @RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to update Contact : {}", contactDTO);
-        if (contactDTO.getId() == null) {
+    @PutMapping("/customers")
+    public ResponseEntity<CustomerDTO> updateContact(@Valid @RequestBody CustomerDTO customerDTO) throws URISyntaxException {
+        log.debug("REST request to update Contact : {}", customerDTO);
+        if (customerDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ContactDTO result = contactService.save(contactDTO);
+        CustomerDTO result = customerService.save(customerDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, contactDTO.getId()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, customerDTO.getId()))
             .body(result);
     }
 
     /**
-     * {@code GET  /contacts} : get all the contacts.
+     * {@code GET  /customers} : get all the customers.
      *
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contacts in body.
      */
-    @GetMapping("/contacts")
-    public ResponseEntity<List<ContactDTO>> getAllContacts(Pageable pageable) {
+    @GetMapping("/customers")
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers(Pageable pageable) {
         log.debug("REST request to get a page of Contacts");
-        Page<ContactDTO> page = contactService.findAll(pageable);
+        Page<CustomerDTO> page = customerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * {@code GET  /contacts/:id} : get the "id" contact.
+     * {@code GET  /customers/:id} : get the "id" contact.
      *
      * @param id the id of the contactDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contactDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/contacts/{id}")
-    public ResponseEntity<ContactDTO> getContact(@PathVariable String id) {
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<CustomerDTO> getContact(@PathVariable String id) {
         log.debug("REST request to get Contact : {}", id);
-        Optional<ContactDTO> contactDTO = contactService.findOne(id);
+        Optional<CustomerDTO> contactDTO = customerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(contactDTO);
     }
 
     /**
-     * {@code DELETE  /contacts/:id} : delete the "id" contact.
+     * {@code DELETE  /customers/:id} : delete the "id" contact.
      *
      * @param id the id of the contactDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/contacts/{id}")
+    @DeleteMapping("/customers/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable String id) {
         log.debug("REST request to delete Contact : {}", id);
-        contactService.delete(id);
+        customerService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

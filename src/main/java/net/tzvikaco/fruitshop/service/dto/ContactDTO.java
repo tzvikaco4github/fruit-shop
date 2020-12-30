@@ -6,8 +6,8 @@ import java.io.Serializable;
 /**
  * A DTO for the {@link net.tzvikaco.fruitshop.domain.Contact} entity.
  */
-public class ContactDTO implements Serializable {
-    
+public abstract class ContactDTO implements Serializable {
+
     private String id;
 
     @NotNull
@@ -27,7 +27,7 @@ public class ContactDTO implements Serializable {
     private String addressId;
 
     private String addressStreetName;
-    
+
     public String getId() {
         return id;
     }

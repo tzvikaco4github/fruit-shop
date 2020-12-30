@@ -1,16 +1,16 @@
 package net.tzvikaco.fruitshop.web.rest;
 
-import net.tzvikaco.fruitshop.RedisTestContainerExtension;
 import net.tzvikaco.fruitshop.FruitShopApp;
+import net.tzvikaco.fruitshop.RedisTestContainerExtension;
 import net.tzvikaco.fruitshop.domain.Contact;
+import net.tzvikaco.fruitshop.domain.internal.Customer;
 import net.tzvikaco.fruitshop.repository.ContactRepository;
-import net.tzvikaco.fruitshop.service.ContactService;
-import net.tzvikaco.fruitshop.service.dto.ContactDTO;
-import net.tzvikaco.fruitshop.service.mapper.ContactMapper;
-
+import net.tzvikaco.fruitshop.service.dto.internal.CustomerDTO;
+import net.tzvikaco.fruitshop.service.internal.CustomerService;
+import net.tzvikaco.fruitshop.service.mapper.CustomerMapper;
+import net.tzvikaco.fruitshop.web.rest.internal.CustomerResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +28,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link ContactResource} REST controller.
+ * Integration tests for the {@link CustomerResource} REST controller.
  */
 @SpringBootTest(classes = FruitShopApp.class)
 @ExtendWith({ RedisTestContainerExtension.class, MockitoExtension.class })
 @AutoConfigureMockMvc
 @WithMockUser
-public class ContactResourceIT {
+public class CustomerResourceIT {
 
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
@@ -52,15 +52,15 @@ public class ContactResourceIT {
     private ContactRepository contactRepository;
 
     @Autowired
-    private ContactMapper contactMapper;
+    private CustomerMapper customerMapper;
 
     @Autowired
-    private ContactService contactService;
+    private CustomerService customerService;
 
     @Autowired
-    private MockMvc restContactMockMvc;
+    private MockMvc restCustomerMockMvc;
 
-    private Contact contact;
+    private Customer customer;
 
     /**
      * Create an entity for this test.
@@ -68,13 +68,13 @@ public class ContactResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Contact createEntity() {
-        Contact contact = new Contact()
+    public static Customer createEntity() {
+        Customer customer = (Customer) new Customer()
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
             .phone(DEFAULT_PHONE)
             .mobile(DEFAULT_MOBILE);
-        return contact;
+        return customer;
     }
     /**
      * Create an updated entity for this test.
@@ -82,29 +82,29 @@ public class ContactResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Contact createUpdatedEntity() {
-        Contact contact = new Contact()
+    public static Customer createUpdatedEntity() {
+        Customer customer = (Customer) new Customer()
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .phone(UPDATED_PHONE)
             .mobile(UPDATED_MOBILE);
-        return contact;
+        return customer;
     }
 
     @BeforeEach
     public void initTest() {
         contactRepository.deleteAll();
-        contact = createEntity();
+        customer = createEntity();
     }
 
     @Test
     public void createContact() throws Exception {
         int databaseSizeBeforeCreate = contactRepository.findAll().size();
         // Create the Contact
-        ContactDTO contactDTO = contactMapper.toDto(contact);
-        restContactMockMvc.perform(post("/api/contacts")
+        CustomerDTO customerDTO = customerMapper.toDto(customer);
+        restCustomerMockMvc.perform(post("/api/contacts")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Contact in the database
@@ -122,13 +122,13 @@ public class ContactResourceIT {
         int databaseSizeBeforeCreate = contactRepository.findAll().size();
 
         // Create the Contact with an existing ID
-        contact.setId("existing_id");
-        ContactDTO contactDTO = contactMapper.toDto(contact);
+        customer.setId("existing_id");
+        CustomerDTO customerDTO = customerMapper.toDto(customer);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restContactMockMvc.perform(post("/api/contacts")
+        restCustomerMockMvc.perform(post("/api/contacts")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Contact in the database
@@ -141,15 +141,15 @@ public class ContactResourceIT {
     public void checkFirstNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = contactRepository.findAll().size();
         // set the field null
-        contact.setFirstName(null);
+        customer.setFirstName(null);
 
         // Create the Contact, which fails.
-        ContactDTO contactDTO = contactMapper.toDto(contact);
+        CustomerDTO customerDTO = customerMapper.toDto(customer);
 
 
-        restContactMockMvc.perform(post("/api/contacts")
+        restCustomerMockMvc.perform(post("/api/contacts")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
         List<Contact> contactList = contactRepository.findAll();
@@ -159,29 +159,29 @@ public class ContactResourceIT {
     @Test
     public void getAllContacts() throws Exception {
         // Initialize the database
-        contactRepository.save(contact);
+        contactRepository.save(customer);
 
         // Get all the contactList
-        restContactMockMvc.perform(get("/api/contacts?sort=id,desc"))
+        restCustomerMockMvc.perform(get("/api/contacts?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(contact.getId())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(customer.getId())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].mobile").value(hasItem(DEFAULT_MOBILE)));
     }
-    
+
     @Test
     public void getContact() throws Exception {
         // Initialize the database
-        contactRepository.save(contact);
+        contactRepository.save(customer);
 
         // Get the contact
-        restContactMockMvc.perform(get("/api/contacts/{id}", contact.getId()))
+        restCustomerMockMvc.perform(get("/api/contacts/{id}", customer.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(contact.getId()))
+            .andExpect(jsonPath("$.id").value(customer.getId()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
@@ -190,29 +190,30 @@ public class ContactResourceIT {
     @Test
     public void getNonExistingContact() throws Exception {
         // Get the contact
-        restContactMockMvc.perform(get("/api/contacts/{id}", Long.MAX_VALUE))
+        restCustomerMockMvc.perform(get("/api/contacts/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
     public void updateContact() throws Exception {
         // Initialize the database
-        contactRepository.save(contact);
+        contactRepository.save(customer);
 
         int databaseSizeBeforeUpdate = contactRepository.findAll().size();
 
         // Update the contact
-        Contact updatedContact = contactRepository.findById(contact.getId()).get();
-        updatedContact
+        //TODO: Get rid of casting using correct repository
+        Customer updatedCustomer = (Customer) contactRepository.findById(customer.getId()).get();
+        updatedCustomer
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .phone(UPDATED_PHONE)
             .mobile(UPDATED_MOBILE);
-        ContactDTO contactDTO = contactMapper.toDto(updatedContact);
+        CustomerDTO customerDTO = customerMapper.toDto(updatedCustomer);
 
-        restContactMockMvc.perform(put("/api/contacts")
+        restCustomerMockMvc.perform(put("/api/customers")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Contact in the database
@@ -230,12 +231,12 @@ public class ContactResourceIT {
         int databaseSizeBeforeUpdate = contactRepository.findAll().size();
 
         // Create the Contact
-        ContactDTO contactDTO = contactMapper.toDto(contact);
+        CustomerDTO customerDTO = customerMapper.toDto(customer);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restContactMockMvc.perform(put("/api/contacts")
+        restCustomerMockMvc.perform(put("/api/contacts")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Contact in the database
@@ -246,12 +247,12 @@ public class ContactResourceIT {
     @Test
     public void deleteContact() throws Exception {
         // Initialize the database
-        contactRepository.save(contact);
+        contactRepository.save(customer);
 
         int databaseSizeBeforeDelete = contactRepository.findAll().size();
 
         // Delete the contact
-        restContactMockMvc.perform(delete("/api/contacts/{id}", contact.getId())
+        restCustomerMockMvc.perform(delete("/api/contacts/{id}", customer.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
