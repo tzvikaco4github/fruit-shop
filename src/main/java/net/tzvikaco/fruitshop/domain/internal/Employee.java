@@ -2,13 +2,11 @@ package net.tzvikaco.fruitshop.domain.internal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.tzvikaco.fruitshop.domain.JobTitle;
-import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "contact")
-@TypeAlias("employee")
+@Document(collection = "employee")
 public class Employee extends Person {
 
     @DBRef

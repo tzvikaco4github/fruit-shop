@@ -41,7 +41,7 @@
   "service": "serviceClass",
   "entityTableName": "contact",
   "databaseType": "mongodb",
-  "readOnly": false,
+  "readOnly": true,
   "jpaMetamodelFiltering": false,
   "pagination": "pagination",
   "microserviceName": "FruitShop"

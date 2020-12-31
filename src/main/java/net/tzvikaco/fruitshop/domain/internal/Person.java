@@ -1,15 +1,11 @@
 package net.tzvikaco.fruitshop.domain.internal;
 
 import net.tzvikaco.fruitshop.domain.Contact;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Document(collection = "contact")
-@TypeAlias("person")
 public abstract class Person extends Contact {
 
     @Field("birthdate")
