@@ -2,12 +2,12 @@ package net.tzvikaco.fruitshop.web.rest;
 
 import net.tzvikaco.fruitshop.FruitShopApp;
 import net.tzvikaco.fruitshop.RedisTestContainerExtension;
-import net.tzvikaco.fruitshop.domain.Contact;
 import net.tzvikaco.fruitshop.domain.internal.Customer;
-import net.tzvikaco.fruitshop.repository.ContactRepository;
+import net.tzvikaco.fruitshop.domain.internal.Customer;
+import net.tzvikaco.fruitshop.repository.internal.CustomerRepository;
 import net.tzvikaco.fruitshop.service.dto.internal.CustomerDTO;
 import net.tzvikaco.fruitshop.service.internal.CustomerService;
-import net.tzvikaco.fruitshop.service.mapper.CustomerMapper;
+import net.tzvikaco.fruitshop.service.mapper.internal.CustomerMapper;
 import net.tzvikaco.fruitshop.web.rest.internal.CustomerResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,7 +50,7 @@ public class CustomerResourceIT {
     private static final String UPDATED_MOBILE = "050-3583429";
 
     @Autowired
-    private ContactRepository contactRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private CustomerMapper customerMapper;
@@ -93,78 +94,79 @@ public class CustomerResourceIT {
 
     @BeforeEach
     public void initTest() {
-        contactRepository.deleteAll();
+        customerRepository.deleteAll();
         customer = createEntity();
     }
 
     @Test
-    public void createContact() throws Exception {
-        int databaseSizeBeforeCreate = contactRepository.findAll().size();
-        // Create the Contact
+    public void createCustomer() throws Exception {
+        int databaseSizeBeforeCreate = customerRepository.findAll().size();
+        // Create the Customer
         CustomerDTO customerDTO = customerMapper.toDto(customer);
-        restCustomerMockMvc.perform(post("/api/contacts")
+        restCustomerMockMvc.perform(post("/api/customers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the Contact in the database
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeCreate + 1);
-        Contact testContact = contactList.get(contactList.size() - 1);
-        assertThat(testContact.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
-        assertThat(testContact.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-        assertThat(testContact.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testContact.getMobile()).isEqualTo(DEFAULT_MOBILE);
+        // Validate the Customer in the database
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeCreate + 1);
+        Customer testCustomer = CustomerList.get(CustomerList.size() - 1);
+        assertThat(testCustomer.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
+        assertThat(testCustomer.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
+        assertThat(testCustomer.getPhone()).isEqualTo(DEFAULT_PHONE);
+        assertThat(testCustomer.getMobile()).isEqualTo(DEFAULT_MOBILE);
     }
 
     @Test
-    public void createContactWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = contactRepository.findAll().size();
+    public void createCustomerWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = customerRepository.findAll().size();
 
-        // Create the Contact with an existing ID
+        // Create the Customer with an existing ID
         customer.setId("existing_id");
         CustomerDTO customerDTO = customerMapper.toDto(customer);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restCustomerMockMvc.perform(post("/api/contacts")
+        restCustomerMockMvc.perform(post("/api/Customers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Contact in the database
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeCreate);
+        // Validate the Customer in the database
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeCreate);
     }
 
 
     @Test
     public void checkFirstNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = contactRepository.findAll().size();
+        int databaseSizeBeforeTest = customerRepository.findAll().size();
         // set the field null
         customer.setFirstName(null);
 
-        // Create the Contact, which fails.
+        // Create the Customer, which fails.
         CustomerDTO customerDTO = customerMapper.toDto(customer);
 
 
-        restCustomerMockMvc.perform(post("/api/contacts")
+        restCustomerMockMvc.perform(post("/api/customers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeTest);
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
-    public void getAllContacts() throws Exception {
+    public void getAllCustomers() throws Exception {
         // Initialize the database
-        contactRepository.save(customer);
+        customerRepository.save(customer);
 
-        // Get all the contactList
-        restCustomerMockMvc.perform(get("/api/contacts?sort=id,desc"))
+        // Get all the CustomerList
+        restCustomerMockMvc.perform(get("/api/Customers?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$.[*].id").value(hasItem(customer.getId())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
@@ -173,12 +175,12 @@ public class CustomerResourceIT {
     }
 
     @Test
-    public void getContact() throws Exception {
+    public void getCustomer() throws Exception {
         // Initialize the database
-        contactRepository.save(customer);
+        customerRepository.save(customer);
 
-        // Get the contact
-        restCustomerMockMvc.perform(get("/api/contacts/{id}", customer.getId()))
+        // Get the Customer
+        restCustomerMockMvc.perform(get("/api/Customers/{id}", customer.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(customer.getId()))
@@ -188,22 +190,21 @@ public class CustomerResourceIT {
             .andExpect(jsonPath("$.mobile").value(DEFAULT_MOBILE));
     }
     @Test
-    public void getNonExistingContact() throws Exception {
-        // Get the contact
-        restCustomerMockMvc.perform(get("/api/contacts/{id}", Long.MAX_VALUE))
+    public void getNonExistingCustomer() throws Exception {
+        // Get the Customer
+        restCustomerMockMvc.perform(get("/api/Customers/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    public void updateContact() throws Exception {
+    public void updateCustomer() throws Exception {
         // Initialize the database
-        contactRepository.save(customer);
+        customerRepository.save(customer);
 
-        int databaseSizeBeforeUpdate = contactRepository.findAll().size();
+        int databaseSizeBeforeUpdate = customerRepository.findAll().size();
 
-        // Update the contact
-        //TODO: Get rid of casting using correct repository
-        Customer updatedCustomer = (Customer) contactRepository.findById(customer.getId()).get();
+        // Update the Customer
+        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
         updatedCustomer
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
@@ -216,48 +217,48 @@ public class CustomerResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isOk());
 
-        // Validate the Contact in the database
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeUpdate);
-        Contact testContact = contactList.get(contactList.size() - 1);
-        assertThat(testContact.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
-        assertThat(testContact.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testContact.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testContact.getMobile()).isEqualTo(UPDATED_MOBILE);
+        // Validate the Customer in the database
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeUpdate);
+        Customer testCustomer = CustomerList.get(CustomerList.size() - 1);
+        assertThat(testCustomer.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
+        assertThat(testCustomer.getLastName()).isEqualTo(UPDATED_LAST_NAME);
+        assertThat(testCustomer.getPhone()).isEqualTo(UPDATED_PHONE);
+        assertThat(testCustomer.getMobile()).isEqualTo(UPDATED_MOBILE);
     }
 
     @Test
-    public void updateNonExistingContact() throws Exception {
-        int databaseSizeBeforeUpdate = contactRepository.findAll().size();
+    public void updateNonExistingCustomer() throws Exception {
+        int databaseSizeBeforeUpdate = customerRepository.findAll().size();
 
-        // Create the Contact
+        // Create the Customer
         CustomerDTO customerDTO = customerMapper.toDto(customer);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restCustomerMockMvc.perform(put("/api/contacts")
+        restCustomerMockMvc.perform(put("/api/Customers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Contact in the database
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the Customer in the database
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
-    public void deleteContact() throws Exception {
+    public void deleteCustomer() throws Exception {
         // Initialize the database
-        contactRepository.save(customer);
+        customerRepository.save(customer);
 
-        int databaseSizeBeforeDelete = contactRepository.findAll().size();
+        int databaseSizeBeforeDelete = customerRepository.findAll().size();
 
-        // Delete the contact
-        restCustomerMockMvc.perform(delete("/api/contacts/{id}", customer.getId())
+        // Delete the Customer
+        restCustomerMockMvc.perform(delete("/api/Customers/{id}", customer.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Contact> contactList = contactRepository.findAll();
-        assertThat(contactList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Customer> CustomerList = customerRepository.findAll();
+        assertThat(CustomerList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }
