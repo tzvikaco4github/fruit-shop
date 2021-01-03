@@ -1,9 +1,9 @@
-package net.tzvikaco.fruitshop.service.dto;
+package net.tzvikaco.fruitshop.service.dto.internal;
 
-import net.tzvikaco.fruitshop.service.dto.internal.CustomerDTO;
-import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import net.tzvikaco.fruitshop.web.rest.TestUtil;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerDTOTest {
 
