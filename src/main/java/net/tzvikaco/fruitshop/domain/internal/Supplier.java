@@ -50,4 +50,13 @@ public class Supplier extends Person {
     public int hashCode() {
         return Objects.hash(super.hashCode(), start, end);
     }
+
+    @Override
+    public String toString() {
+        return "Supplier{" +
+            super.toString() +
+            "start=" + start +
+            ", end=" + end +
+            '}';
+    }
 }

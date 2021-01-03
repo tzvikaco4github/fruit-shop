@@ -42,4 +42,12 @@ public class Employee extends Person {
     public int hashCode() {
         return Objects.hash(super.hashCode(), jobTitle);
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+            super.toString() +
+            "jobTitle=" + jobTitle +
+            '}';
+    }
 }

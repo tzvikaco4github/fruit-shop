@@ -37,4 +37,12 @@ public abstract class Person extends Contact {
     public int hashCode() {
         return Objects.hash(super.hashCode(), birthdate);
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+            super.toString() +
+            "birthdate=" + birthdate +
+            '}';
+    }
 }
