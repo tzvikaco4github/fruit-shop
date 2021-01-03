@@ -1,9 +1,11 @@
-package net.tzvikaco.fruitshop.domain;
+package net.tzvikaco.fruitshop.domain.internal;
 
-import net.tzvikaco.fruitshop.domain.internal.Employee;
-import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
+import net.tzvikaco.fruitshop.domain.Address;
+import net.tzvikaco.fruitshop.domain.JobTitle;
 import net.tzvikaco.fruitshop.web.rest.TestUtil;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmployeeTest {
 
