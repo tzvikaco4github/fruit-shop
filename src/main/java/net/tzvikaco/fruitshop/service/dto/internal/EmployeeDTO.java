@@ -38,4 +38,13 @@ public class EmployeeDTO extends PersonDTO implements Serializable {
     public int hashCode() {
         return Objects.hash(super.hashCode(), jobTitleId, jobTitleTitle);
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeDTO{ " +
+            super.toString() +
+            "jobTitleId='" + jobTitleId + '\'' +
+            ", jobTitleTitle='" + jobTitleTitle + '\'' +
+            '}';
+    }
 }

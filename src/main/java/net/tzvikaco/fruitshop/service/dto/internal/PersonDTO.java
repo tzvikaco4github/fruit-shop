@@ -31,4 +31,11 @@ public abstract class PersonDTO extends ContactDTO {
         return Objects.hash(super.hashCode(), birthdate);
     }
 
+    @Override
+    public String toString() {
+        return "PersonDTO{ " +
+            super.toString() +
+            "birthdate=" + birthdate +
+            '}';
+    }
 }
