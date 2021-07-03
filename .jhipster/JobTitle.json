@@ -4,7 +4,7 @@
   "relationships": [],
   "fields": [
     {
-      "fieldName": "jobTitle",
+      "fieldName": "name",
       "fieldType": "String",
       "fieldValidateRules": ["required", "minlength"],
       "fieldValidateRulesMinlength": "4"

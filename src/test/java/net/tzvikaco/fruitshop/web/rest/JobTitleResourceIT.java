@@ -36,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 public class JobTitleResourceIT {
 
-    private static final String DEFAULT_JOB_TITLE = "AAAAAAAAAA";
-    private static final String UPDATED_JOB_TITLE = "BBBBBBBBBB";
+    private static final String DEFAULT_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_JOB_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_JOB_DESCRIPTION = "BBBBBBBBBB";
@@ -64,7 +64,7 @@ public class JobTitleResourceIT {
      */
     public static JobTitle createEntity() {
         JobTitle jobTitle = new JobTitle()
-            .jobTitle(DEFAULT_JOB_TITLE)
+            .name(DEFAULT_NAME)
             .jobDescription(DEFAULT_JOB_DESCRIPTION);
         return jobTitle;
     }
@@ -76,7 +76,7 @@ public class JobTitleResourceIT {
      */
     public static JobTitle createUpdatedEntity() {
         JobTitle jobTitle = new JobTitle()
-            .jobTitle(UPDATED_JOB_TITLE)
+            .name(UPDATED_NAME)
             .jobDescription(UPDATED_JOB_DESCRIPTION);
         return jobTitle;
     }
@@ -101,7 +101,7 @@ public class JobTitleResourceIT {
         List<JobTitle> jobTitleList = jobTitleRepository.findAll();
         assertThat(jobTitleList).hasSize(databaseSizeBeforeCreate + 1);
         JobTitle testJobTitle = jobTitleList.get(jobTitleList.size() - 1);
-        assertThat(testJobTitle.getJobTitle()).isEqualTo(DEFAULT_JOB_TITLE);
+        assertThat(testJobTitle.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testJobTitle.getJobDescription()).isEqualTo(DEFAULT_JOB_DESCRIPTION);
     }
 
@@ -126,10 +126,10 @@ public class JobTitleResourceIT {
 
 
     @Test
-    public void checkJobTitleIsRequired() throws Exception {
+    public void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = jobTitleRepository.findAll().size();
         // set the field null
-        jobTitle.setJobTitle(null);
+        jobTitle.setName(null);
 
         // Create the JobTitle, which fails.
         JobTitleDTO jobTitleDTO = jobTitleMapper.toDto(jobTitle);
@@ -173,7 +173,7 @@ public class JobTitleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(jobTitle.getId())))
-            .andExpect(jsonPath("$.[*].jobTitle").value(hasItem(DEFAULT_JOB_TITLE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].jobDescription").value(hasItem(DEFAULT_JOB_DESCRIPTION)));
     }
     
@@ -187,7 +187,7 @@ public class JobTitleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(jobTitle.getId()))
-            .andExpect(jsonPath("$.jobTitle").value(DEFAULT_JOB_TITLE))
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.jobDescription").value(DEFAULT_JOB_DESCRIPTION));
     }
     @Test
@@ -207,7 +207,7 @@ public class JobTitleResourceIT {
         // Update the jobTitle
         JobTitle updatedJobTitle = jobTitleRepository.findById(jobTitle.getId()).get();
         updatedJobTitle
-            .jobTitle(UPDATED_JOB_TITLE)
+            .name(UPDATED_NAME)
             .jobDescription(UPDATED_JOB_DESCRIPTION);
         JobTitleDTO jobTitleDTO = jobTitleMapper.toDto(updatedJobTitle);
 
@@ -220,7 +220,7 @@ public class JobTitleResourceIT {
         List<JobTitle> jobTitleList = jobTitleRepository.findAll();
         assertThat(jobTitleList).hasSize(databaseSizeBeforeUpdate);
         JobTitle testJobTitle = jobTitleList.get(jobTitleList.size() - 1);
-        assertThat(testJobTitle.getJobTitle()).isEqualTo(UPDATED_JOB_TITLE);
+        assertThat(testJobTitle.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testJobTitle.getJobDescription()).isEqualTo(UPDATED_JOB_DESCRIPTION);
     }
 

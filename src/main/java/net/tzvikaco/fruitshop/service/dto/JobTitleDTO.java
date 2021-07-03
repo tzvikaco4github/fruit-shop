@@ -12,7 +12,7 @@ public class JobTitleDTO implements Serializable {
 
     @NotNull
     @Size(min = 4)
-    private String jobTitle;
+    private String name;
 
     @NotNull
     @Size(min = 10)
@@ -27,12 +27,12 @@ public class JobTitleDTO implements Serializable {
         this.id = id;
     }
 
-    public String getJobTitle() {
-        return jobTitle;
+    public String getName() {
+        return name;
     }
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getJobDescription() {
@@ -65,7 +65,7 @@ public class JobTitleDTO implements Serializable {
     public String toString() {
         return "JobTitleDTO{" +
             "id=" + getId() +
-            ", jobTitle='" + getJobTitle() + "'" +
+            ", name='" + getName() + "'" +
             ", jobDescription='" + getJobDescription() + "'" +
             "}";
     }

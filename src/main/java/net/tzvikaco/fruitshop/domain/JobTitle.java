@@ -20,8 +20,8 @@ public class JobTitle implements Serializable {
 
     @NotNull
     @Size(min = 4)
-    @Field("job_title")
-    private String jobTitle;
+    @Field("name")
+    private String name;
 
     @NotNull
     @Size(min = 10)
@@ -37,17 +37,17 @@ public class JobTitle implements Serializable {
         this.id = id;
     }
 
-    public String getJobTitle() {
-        return jobTitle;
+    public String getName() {
+        return name;
     }
 
-    public JobTitle jobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public JobTitle name(String name) {
+        this.name = name;
         return this;
     }
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getJobDescription() {
@@ -85,7 +85,7 @@ public class JobTitle implements Serializable {
     public String toString() {
         return "JobTitle{" +
             "id=" + getId() +
-            ", jobTitle='" + getJobTitle() + "'" +
+            ", name='" + getName() + "'" +
             ", jobDescription='" + getJobDescription() + "'" +
             "}";
     }
