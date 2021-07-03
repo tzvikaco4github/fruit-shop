@@ -1,13 +1,16 @@
-package net.tzvikaco.fruitshop.service;
+package net.tzvikaco.fruitshop.service.extended;
 
-import net.tzvikaco.fruitshop.domain.Stock;
 import net.tzvikaco.fruitshop.repository.ItemRepository;
+import net.tzvikaco.fruitshop.service.ItemService;
+import net.tzvikaco.fruitshop.service.StockService;
 import net.tzvikaco.fruitshop.service.dto.ItemDTO;
 import net.tzvikaco.fruitshop.service.dto.StockDTO;
 import net.tzvikaco.fruitshop.service.mapper.ItemMapper;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Primary
 @Service
 public class ItemExtendedService extends ItemService {
 

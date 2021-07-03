@@ -1,7 +1,5 @@
-package net.tzvikaco.fruitshop.service.mapper;
+package net.tzvikaco.fruitshop.service.mapper.internal;
 
-import net.tzvikaco.fruitshop.service.mapper.internal.CustomerMapper;
-import net.tzvikaco.fruitshop.service.mapper.internal.CustomerMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

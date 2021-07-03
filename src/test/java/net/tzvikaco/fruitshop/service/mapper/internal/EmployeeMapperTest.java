@@ -1,9 +1,8 @@
-package net.tzvikaco.fruitshop.service.mapper;
+package net.tzvikaco.fruitshop.service.mapper.internal;
 
-import net.tzvikaco.fruitshop.service.mapper.internal.EmployeeMapper;
-import net.tzvikaco.fruitshop.service.mapper.internal.EmployeeMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmployeeMapperTest {

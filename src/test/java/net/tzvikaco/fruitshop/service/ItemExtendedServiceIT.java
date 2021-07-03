@@ -2,24 +2,18 @@ package net.tzvikaco.fruitshop.service;
 
 import net.tzvikaco.fruitshop.domain.enumeration.UnitType;
 import net.tzvikaco.fruitshop.service.dto.ItemDTO;
+import net.tzvikaco.fruitshop.service.extended.ItemExtendedService;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ItemExtendedServiceTest {
+class ItemExtendedServiceIT {
 
     @Autowired
     private ItemExtendedService itemExtendedService;
