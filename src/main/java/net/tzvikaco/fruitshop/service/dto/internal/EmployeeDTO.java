@@ -7,7 +7,7 @@ public class EmployeeDTO extends PersonDTO implements Serializable {
 
     private String jobTitleId;
 
-    private String jobTitleTitle;
+    private String jobTitleName;
 
     public String getJobTitleId() {
         return jobTitleId;
@@ -17,12 +17,12 @@ public class EmployeeDTO extends PersonDTO implements Serializable {
         this.jobTitleId = jobTitleId;
     }
 
-    public String getJobTitleTitle() {
-        return jobTitleTitle;
+    public String getJobTitleName() {
+        return jobTitleName;
     }
 
-    public void setJobTitleTitle(String jobTitleTitle) {
-        this.jobTitleTitle = jobTitleTitle;
+    public void setJobTitleName(String jobTitleName) {
+        this.jobTitleName = jobTitleName;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class EmployeeDTO extends PersonDTO implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         EmployeeDTO that = (EmployeeDTO) o;
-        return jobTitleId.equals(that.jobTitleId) && jobTitleTitle.equals(that.jobTitleTitle);
+        return jobTitleId.equals(that.jobTitleId) && jobTitleName.equals(that.jobTitleName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), jobTitleId, jobTitleTitle);
+        return Objects.hash(super.hashCode(), jobTitleId, jobTitleName);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class EmployeeDTO extends PersonDTO implements Serializable {
         return "EmployeeDTO{ " +
             super.toString() +
             "jobTitleId='" + jobTitleId + '\'' +
-            ", jobTitleTitle='" + jobTitleTitle + '\'' +
+            ", jobTitleTitle='" + jobTitleName + '\'' +
             '}';
     }
 }

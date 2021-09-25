@@ -33,30 +33,30 @@ public class SupplierTest {
     @Test
     public void testIsActive_whenStartDateIsAfterNow_thenFalse() {
         Supplier supplier = new Supplier();
-        supplier.setStart(LocalDate.now().plus(1, ChronoUnit.DAYS));
+        supplier.setStartDate(LocalDate.now().plus(1, ChronoUnit.DAYS));
         assertThat(supplier.isActive()).isFalse();
     }
 
     @Test
     public void testIsActive_whenStartDateIsNotAfterNowAndEndDateIsNull_thenTrue() {
         Supplier supplier = new Supplier();
-        supplier.setStart(LocalDate.now().minus(1, ChronoUnit.DAYS));
+        supplier.setStartDate(LocalDate.now().minus(1, ChronoUnit.DAYS));
         assertThat(supplier.isActive()).isTrue();
     }
 
     @Test
     public void testIsActive_whenStartDateIsNotAfterNowAndEndDateIsBeforeToday_thenFalse() {
         Supplier supplier = new Supplier();
-        supplier.setStart(LocalDate.now().minus(2, ChronoUnit.DAYS));
-        supplier.setEnd(LocalDate.now().minus(1, ChronoUnit.DAYS));
+        supplier.setStartDate(LocalDate.now().minus(2, ChronoUnit.DAYS));
+        supplier.setEndDate(LocalDate.now().minus(1, ChronoUnit.DAYS));
         assertThat(supplier.isActive()).isFalse();
     }
 
     @Test
     public void testIsActive_whenStartDateIsBeforeNowAndEndDateIsAfterToday_thenTrue() {
         Supplier supplier = new Supplier();
-        supplier.setStart(LocalDate.now().minus(1, ChronoUnit.DAYS));
-        supplier.setEnd(LocalDate.now().plus(1, ChronoUnit.DAYS));
+        supplier.setStartDate(LocalDate.now().minus(1, ChronoUnit.DAYS));
+        supplier.setEndDate(LocalDate.now().plus(1, ChronoUnit.DAYS));
         assertThat(supplier.isActive()).isTrue();
     }
 }
