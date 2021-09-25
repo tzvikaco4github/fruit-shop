@@ -1,5 +1,6 @@
 package net.tzvikaco.fruitshop.domain.internal;
 
+import net.tzvikaco.fruitshop.domain.Contact;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -9,32 +10,42 @@ import java.util.Objects;
 import static java.time.LocalDate.now;
 
 @Document(collection = "supplier")
-public class Supplier extends Person {
+public class Supplier extends Contact {
 
-    @Field("start")
-    private LocalDate start;
+    @Field("start_date")
+    private LocalDate startDate;
 
-    @Field("end")
-    private LocalDate end;
+    @Field("end_date")
+    private LocalDate endDate;
 
-    public LocalDate getStart() {
-        return start;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart(LocalDate start) {
-        this.start = start;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDate getEnd() {
-        return end;
+    public Supplier startDate(LocalDate start) {
+        setStartDate(start);
+        return this;
     }
 
-    public void setEnd(LocalDate end) {
-        this.end = end;
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public Supplier endDate(LocalDate localDate) {
+        setEndDate(endDate);
+        return this;
     }
 
     public boolean isActive() {
-        return start != null && !start.isAfter(now()) && (end == null || end.isAfter(now()));
+        return startDate != null && !startDate.isAfter(now()) && (endDate == null || endDate.isAfter(now()));
     }
 
     @Override
@@ -43,20 +54,20 @@ public class Supplier extends Person {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Supplier supplier = (Supplier) o;
-        return Objects.equals(start, supplier.start) && Objects.equals(end, supplier.end);
+        return Objects.equals(startDate, supplier.startDate) && Objects.equals(endDate, supplier.endDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), start, end);
+        return Objects.hash(super.hashCode(), startDate, endDate);
     }
 
     @Override
     public String toString() {
         return "Supplier{" +
             super.toString() +
-            "start=" + start +
-            ", end=" + end +
+            "start=" + startDate +
+            ", end=" + endDate +
             '}';
     }
 }

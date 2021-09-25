@@ -30,7 +30,7 @@ public class EmployeeDTOTest {
     public EmployeeDTO createDTO() {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setJobTitleId(DUMMY_ID);
-        employeeDTO.setJobTitleTitle(DUMMY_TITLE);
+        employeeDTO.setJobTitleName(DUMMY_TITLE);
         return employeeDTO;
     }
 }

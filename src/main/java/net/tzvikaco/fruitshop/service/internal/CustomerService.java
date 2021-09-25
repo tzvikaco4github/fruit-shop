@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * Service Implementation for managing {@link Contact}.
+ * Service Implementation for managing {@link Customer}.
  */
 @Service
 public class CustomerService {

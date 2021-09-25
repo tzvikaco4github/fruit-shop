@@ -1,4 +1,4 @@
-package net.tzvikaco.fruitshop.web.rest;
+package net.tzvikaco.fruitshop.web.rest.internal;
 
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;

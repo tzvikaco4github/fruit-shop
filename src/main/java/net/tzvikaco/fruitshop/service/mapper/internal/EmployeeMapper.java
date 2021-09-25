@@ -21,7 +21,7 @@ public interface EmployeeMapper extends EntityMapper<EmployeeDTO, Employee> {
     @Mapping(source = "address.id", target = "addressId")
     @Mapping(source = "address.streetName", target = "addressStreetName")
     @Mapping(source = "jobTitle.id", target = "jobTitleId")
-    @Mapping(source = "jobTitle.jobTitle", target = "jobTitleTitle")
+    @Mapping(source = "jobTitle.name", target = "jobTitleName")
     EmployeeDTO toDto(Employee employee);
 
     @Mapping(source = "addressId", target = "address")

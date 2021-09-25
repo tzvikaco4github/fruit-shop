@@ -1,13 +1,14 @@
 package net.tzvikaco.fruitshop.web.rest;
 
 import net.tzvikaco.fruitshop.FruitShopApp;
+import net.tzvikaco.fruitshop.RandomDateUtils;
 import net.tzvikaco.fruitshop.RedisTestContainerExtension;
-import net.tzvikaco.fruitshop.domain.internal.Employee;
-import net.tzvikaco.fruitshop.repository.internal.EmployeeRepository;
-import net.tzvikaco.fruitshop.service.dto.internal.EmployeeDTO;
-import net.tzvikaco.fruitshop.service.internal.EmployeeService;
-import net.tzvikaco.fruitshop.service.mapper.internal.EmployeeMapper;
-import net.tzvikaco.fruitshop.web.rest.internal.EmployeeResource;
+import net.tzvikaco.fruitshop.domain.internal.Supplier;
+import net.tzvikaco.fruitshop.repository.internal.SupplierRepository;
+import net.tzvikaco.fruitshop.service.dto.internal.SupplierDTO;
+import net.tzvikaco.fruitshop.service.internal.SupplierService;
+import net.tzvikaco.fruitshop.service.mapper.internal.SupplierMapper;
+import net.tzvikaco.fruitshop.web.rest.internal.SupplierResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,13 +30,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link EmployeeResource} REST controller.
+ * Integration tests for the {@link SupplierResource} REST controller.
  */
 @SpringBootTest(classes = FruitShopApp.class)
 @ExtendWith({RedisTestContainerExtension.class, MockitoExtension.class})
 @AutoConfigureMockMvc
 @WithMockUser
-public class EmployeeResourceIT {
+public class SupplierResourceIT {
 
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
@@ -48,19 +50,25 @@ public class EmployeeResourceIT {
     private static final String DEFAULT_MOBILE = "054-7954075";
     private static final String UPDATED_MOBILE = "050-3583429";
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private static final LocalDate DEFAULT_START_DATE = RandomDateUtils.randomLocalDate();
+    private static final LocalDate UPDATED_START_DATE = RandomDateUtils.randomLocalDate();
+
+    private static final LocalDate DEFAULT_END_DATE = DEFAULT_START_DATE.plusDays(1L);
+    private static final LocalDate UPDATED_END_DATE = UPDATED_START_DATE.plusDays(1L);
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private SupplierRepository supplierRepository;
 
     @Autowired
-    private EmployeeService employeeService;
+    private SupplierMapper supplierMapper;
 
     @Autowired
-    private MockMvc restEmployeeMockMvc;
+    private SupplierService supplierService;
 
-    private Employee employee;
+    @Autowired
+    private MockMvc restSupplierMockMvc;
+
+    private Supplier supplier;
 
     /**
      * Create an entity for this test.
@@ -68,15 +76,16 @@ public class EmployeeResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Employee createEntity() {
-        Employee employee = (Employee) new Employee()
+    public static Supplier createEntity() {
+        Supplier supplier = (Supplier) new Supplier()
+            .startDate(DEFAULT_START_DATE)
+            .endDate(DEFAULT_END_DATE)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
             .phone(DEFAULT_PHONE)
             .mobile(DEFAULT_MOBILE)
             .address(AddressResourceIT.createEntity());
-        employee.jobTitle(JobTitleResourceIT.createEntity());
-        return employee;
+        return supplier;
     }
 
     /**
@@ -85,129 +94,137 @@ public class EmployeeResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Employee createUpdatedEntity() {
-        Employee employee = (Employee) new Employee()
+    public static Supplier createUpdatedEntity() {
+        Supplier supplier = (Supplier) new Supplier()
+            .startDate(UPDATED_START_DATE)
+            .endDate(UPDATED_END_DATE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .phone(UPDATED_PHONE)
             .mobile(UPDATED_MOBILE)
             .address(AddressResourceIT.createEntity());
-        employee.jobTitle(JobTitleResourceIT.createEntity());
-        return employee;
+        return supplier;
     }
 
     @BeforeEach
     public void initTest() {
-        employeeRepository.deleteAll();
-        employee = createEntity();
+        supplierRepository.deleteAll();
+        supplier = createEntity();
     }
 
     @Test
-    public void getAllEmployees() throws Exception {
+    public void getAllSuppliers() throws Exception {
         // Initialize the database
-        employeeRepository.save(employee);
+        supplierRepository.save(supplier);
 
-        // Get all the EmployeeList
-        restEmployeeMockMvc.perform(get("/api/Employees?sort=id,desc"))
+        // Get all the SupplierList
+        restSupplierMockMvc.perform(get("/api/Suppliers?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(employee.getId())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(supplier.getId())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].mobile").value(hasItem(DEFAULT_MOBILE)))
-            .andExpect(jsonPath("$.[*].mobile").value(hasItem(DEFAULT_MOBILE)));
+            .andExpect(jsonPath("$.[*].start_date").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].end_date").value(hasItem(DEFAULT_END_DATE.toString())));
     }
 
     @Test
-    public void getEmployee() throws Exception {
+    public void getSupplier() throws Exception {
         // Initialize the database
-        employeeRepository.save(employee);
+        supplierRepository.save(supplier);
 
-        // Get the Employee
-        restEmployeeMockMvc.perform(get("/api/Employees/{id}", employee.getId()))
+        // Get the Supplier
+        restSupplierMockMvc.perform(get("/api/Suppliers/{id}", supplier.getId()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(employee.getId()))
+            .andExpect(jsonPath("$.id").value(supplier.getId()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
-            .andExpect(jsonPath("$.mobile").value(DEFAULT_MOBILE));
+            .andExpect(jsonPath("$.mobile").value(DEFAULT_MOBILE))
+            .andExpect(jsonPath("$.start_date").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.end_date").value(hasItem(DEFAULT_END_DATE.toString())));
     }
 
     @Test
-    public void getNonExistingEmployee() throws Exception {
-        // Get the Employee
-        restEmployeeMockMvc.perform(get("/api/Employees/{id}", Long.MAX_VALUE))
+    public void getNonExistingSupplier() throws Exception {
+        // Get the Supplier
+        restSupplierMockMvc.perform(get("/api/Suppliers/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    public void updateEmployee() throws Exception {
+    public void updateSupplier() throws Exception {
         // Initialize the database
-        employeeRepository.save(employee);
+        supplierRepository.save(supplier);
 
-        int databaseSizeBeforeUpdate = employeeRepository.findAll().size();
+        int databaseSizeBeforeUpdate = supplierRepository.findAll().size();
 
         // Update the Customer
-        Employee updatedEmployee = employeeRepository.findById(employee.getId()).get();
-        updatedEmployee
+        Supplier updatedSupplier = supplierRepository.findById(supplier.getId()).get();
+        updatedSupplier
+            .startDate(UPDATED_START_DATE)
+            .endDate(UPDATED_END_DATE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .phone(UPDATED_PHONE)
             .mobile(UPDATED_MOBILE);
-        EmployeeDTO customerDTO = employeeMapper.toDto(updatedEmployee);
+        SupplierDTO customerDTO = supplierMapper.toDto(updatedSupplier);
 
-        restEmployeeMockMvc.perform(put("/api/employees")
+        restSupplierMockMvc.perform(put("/api/suppliers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Customer in the database
-        List<Employee> employeeList = employeeRepository.findAll();
-        assertThat(employeeList).hasSize(databaseSizeBeforeUpdate);
-        Employee testEmployee = employeeList.get(employeeList.size() - 1);
-        assertThat(testEmployee.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
-        assertThat(testEmployee.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testEmployee.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testEmployee.getMobile()).isEqualTo(UPDATED_MOBILE);
+        List<Supplier> supplierList = supplierRepository.findAll();
+        assertThat(supplierList).hasSize(databaseSizeBeforeUpdate);
+        Supplier testSupplier = supplierList.get(supplierList.size() - 1);
+        assertThat(testSupplier.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
+        assertThat(testSupplier.getLastName()).isEqualTo(UPDATED_LAST_NAME);
+        assertThat(testSupplier.getPhone()).isEqualTo(UPDATED_PHONE);
+        assertThat(testSupplier.getMobile()).isEqualTo(UPDATED_MOBILE);
+        assertThat(testSupplier.getStartDate()).isEqualTo(UPDATED_START_DATE);
+        assertThat(testSupplier.getEndDate()).isEqualTo(UPDATED_END_DATE);
     }
 
     @Test
     public void updateNonExistingCustomer() throws Exception {
-        int databaseSizeBeforeUpdate = employeeRepository.findAll().size();
+        int databaseSizeBeforeUpdate = supplierRepository.findAll().size();
 
         // Create the Customer
-        EmployeeDTO customerDTO = employeeMapper.toDto(employee);
+        SupplierDTO customerDTO = supplierMapper.toDto(supplier);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restEmployeeMockMvc.perform(put("/api/employees")
+        restSupplierMockMvc.perform(put("/api/suppliers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(customerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Customer in the database
-        List<Employee> CustomerList = employeeRepository.findAll();
+        List<Supplier> CustomerList = supplierRepository.findAll();
         assertThat(CustomerList).hasSize(databaseSizeBeforeUpdate);
     }
 
 
     @Test
-    public void deleteEmployee() throws Exception {
+    public void deleteSupplier() throws Exception {
         // Initialize the database
-        employeeRepository.save(employee);
+        supplierRepository.save(supplier);
 
-        int databaseSizeBeforeDelete = employeeRepository.findAll().size();
+        int databaseSizeBeforeDelete = supplierRepository.findAll().size();
 
         // Delete the Customer
-        restEmployeeMockMvc.perform(delete("/api/employees/{id}", employee.getId())
+        restSupplierMockMvc.perform(delete("/api/suppliers/{id}", supplier.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Employee> CustomerList = employeeRepository.findAll();
+        List<Supplier> CustomerList = supplierRepository.findAll();
         assertThat(CustomerList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
